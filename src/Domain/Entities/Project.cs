@@ -1,8 +1,9 @@
 using Domain.Entities.Common;
+using Domain.Interfaces;
 
 namespace Domain.Entities;
 
-public class Project : BaseAudit
+public class Project : BaseAudit, ITenantScoped
 {
     public Guid Id { get; private init; }
     public Guid TenantId { get; private init; }
