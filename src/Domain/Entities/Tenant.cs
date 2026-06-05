@@ -21,6 +21,8 @@ public class Tenant : BaseAudit
     public string BillingEmail { get; private set; } = null!;
     public TenantSettings Settings { get; private set; } = null!;
 
+    public ICollection<Project> Projects { get; private set; } = new List<Project>();
+
     private Tenant() { }
 
     public static Tenant Create(string slug, string name, PlanTier plan = PlanTier.Free) =>
