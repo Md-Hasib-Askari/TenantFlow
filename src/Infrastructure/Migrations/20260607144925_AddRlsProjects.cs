@@ -11,6 +11,7 @@ namespace Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.Sql("ALTER TABLE projects ENABLE ROW LEVEL SECURITY;");
+            migrationBuilder.Sql("ALTER TABLE projects FORCE ROW LEVEL SECURITY;");
             migrationBuilder.Sql(
                 @"
             CREATE POLICY tenant_isolation_policy ON projects
