@@ -28,5 +28,6 @@ public record TenantInfo(
     string Name,
     PlanTier Plan,
     TenantStatus Status,
-    IsolationMode IsolationMode
+    IsolationMode IsolationMode,
+    DateTimeOffset? DeletedAt
 );
