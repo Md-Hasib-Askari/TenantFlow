@@ -28,7 +28,7 @@ public class TenantRepository(AppDbContext db) : ITenantRepository
                 ct
             );
 
-    public Task<Tenant?> GetBySlugAsyc(string slug, CancellationToken ct = default) =>
+    public Task<Tenant?> GetBySlugAsync(string slug, CancellationToken ct = default) =>
         _db
             .Tenants.AsNoTracking()
             .FirstOrDefaultAsync(
