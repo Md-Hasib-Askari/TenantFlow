@@ -109,7 +109,7 @@ public class TenantResolutionMiddleware(
         if (hit.HasValue)
             return JsonSerializer.Deserialize<TenantInfo>(hit.ToString());
 
-        var tenant = await tenantRepo.GetBySlugAsyc(slug);
+        var tenant = await tenantRepo.GetBySlugAsync(slug);
         if (tenant is null)
             return null;
 
