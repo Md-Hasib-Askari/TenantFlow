@@ -11,6 +11,6 @@ public class UserTenantRoleConfiguration : IEntityTypeConfiguration<UserTenantRo
         builder.HasKey(r => r.Id);
         builder.HasIndex(r => new { r.UserId, r.TenantId }).IsUnique();
         builder.HasOne(r => r.User).WithMany(u => u.TenantRoles).HasForeignKey(r => r.UserId);
-        builder.HasOne(r => r.Tenant).WithMany().HasForeignKey(r => r.TenantId);
+        builder.HasOne(r => r.Tenant).WithMany(t => t.UserRoles).HasForeignKey(r => r.TenantId);
     }
 }

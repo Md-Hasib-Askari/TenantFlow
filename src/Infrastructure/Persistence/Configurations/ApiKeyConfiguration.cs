@@ -18,7 +18,7 @@ public class ApiKeyConfiguration : IEntityTypeConfiguration<ApiKey>
 
         builder
             .HasOne(k => k.Tenant)
-            .WithMany()
+            .WithMany(t => t.ApiKeys)
             .HasForeignKey(k => k.TenantId)
             .OnDelete(DeleteBehavior.Cascade);
     }

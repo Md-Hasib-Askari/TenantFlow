@@ -9,6 +9,6 @@ public class InvitationConfiguration : IEntityTypeConfiguration<Invitaiton>
     public void Configure(EntityTypeBuilder<Invitaiton> builder)
     {
         builder.HasKey(i => i.Id);
-        builder.HasOne(i => i.Tenant).WithMany().HasForeignKey(i => i.TenantId);
+        builder.HasOne(i => i.Tenant).WithMany(t => t.Invitaitons).HasForeignKey(i => i.TenantId);
     }
 }
