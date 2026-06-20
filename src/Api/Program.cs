@@ -86,7 +86,7 @@ builder.Services.AddDbContext<AppDbContext>(
 
         options
             .UseNpgsql(builder.Configuration.GetConnectionString("Postgres"))
-            .UseSnakeCaseNamingConvention()
+            // .UseSnakeCaseNamingConvention()
             .AddInterceptors(new RlsConnectionInterceptor(tenantContext));
     }
 );
