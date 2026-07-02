@@ -1,7 +1,7 @@
 using Domain.Entities.Common;
 using Domain.Interfaces;
 
-namespace Domain.Entities;
+namespace Domain.Entities.Project;
 
 public class Project : BaseAudit, ITenantScoped
 {
@@ -13,6 +13,7 @@ public class Project : BaseAudit, ITenantScoped
 
     public Tenant Tenant { get; private set; } = null!;
     public ICollection<TaskItem> Tasks { get; private set; } = [];
+    public ICollection<ProjectMember> Members { get; private set; } = [];
 
     private Project() { }
 

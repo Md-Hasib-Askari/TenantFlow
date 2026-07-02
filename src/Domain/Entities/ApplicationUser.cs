@@ -1,4 +1,5 @@
 using Domain.Entities.Common;
+using Domain.Entities.Project;
 using Microsoft.AspNetCore.Identity;
 
 namespace Domain.Entities;
@@ -14,6 +15,7 @@ public class ApplicationUser : IdentityUser<Guid>, IAuditable
 
     public ICollection<UserTenantRole> TenantRoles { get; private set; } = [];
     public ICollection<RefreshToken> RefreshTokens { get; private set; } = [];
+    public ICollection<ProjectMember> ProjectMemberships { get; private set; } = [];
 
     public static ApplicationUser Create(
         string userName,

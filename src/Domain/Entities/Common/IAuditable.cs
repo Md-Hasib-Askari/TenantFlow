@@ -9,5 +9,4 @@ public interface IAuditable
 {
     DateTimeOffset CreatedAt { get; }
     DateTimeOffset? UpdatedAt { get; }
-    DateTimeOffset? DeletedAt { get; }
 }

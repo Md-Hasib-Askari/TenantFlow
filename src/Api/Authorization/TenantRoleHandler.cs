@@ -19,7 +19,7 @@ public class TenantRoleHandler : AuthorizationHandler<TenantRoleRequirement>
             return Task.CompletedTask;
         }
 
-        if (requirement.AllowedRoles.Contains(tenantIdClaim, StringComparer.OrdinalIgnoreCase))
+        if (requirement.AllowedRoles.Contains(tenantRoleClaim, StringComparer.OrdinalIgnoreCase))
         {
             context.Succeed(requirement);
         }
@@ -28,7 +28,7 @@ public class TenantRoleHandler : AuthorizationHandler<TenantRoleRequirement>
             context.Fail(
                 new AuthorizationFailureReason(
                     this,
-                    $"Role '{tenantIdClaim}' is not authorized. Required: {string.Join(", ", requirement.AllowedRoles)}."
+                    $"Role '{tenantRoleClaim}' is not authorized. Required: {string.Join(", ", requirement.AllowedRoles)}."
                 )
             );
         }
