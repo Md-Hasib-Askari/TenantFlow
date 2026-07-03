@@ -1,0 +1,53 @@
+@Api_HostAddress = http://localhost:5204
+
+### List all projects
+GET {{Api_HostAddress}}/api/projects
+Accept: application/json
+
+### Get project by ID
+GET {{Api_HostAddress}}/api/projects/00000000-0000-0000-0000-000000000000
+Accept: application/json
+
+### Create project
+POST {{Api_HostAddress}}/api/projects
+Content-Type: application/json
+
+{
+  "name": "My Project",
+  "description": "A sample project",
+  "color": "#63B3ED"
+}
+
+### Create project (required only)
+POST {{Api_HostAddress}}/api/projects
+Content-Type: application/json
+
+{
+  "name": "Minimal Project"
+}
+
+### Update project name
+PATCH {{Api_HostAddress}}/api/projects/00000000-0000-0000-0000-000000000000
+Content-Type: application/json
+
+{
+  "name": "Renamed Project"
+}
+
+### Update project color
+PATCH {{Api_HostAddress}}/api/projects/00000000-0000-0000-0000-000000000000
+Content-Type: application/json
+
+{
+  "color": "#FF5733"
+}
+
+### Update all fields
+PATCH {{Api_HostAddress}}/api/projects/00000000-0000-0000-0000-000000000000
+Content-Type: application/json
+
+{
+  "name": "Full Update",
+  "description": "Updated description",
+  "color": "#90EE90"
+}

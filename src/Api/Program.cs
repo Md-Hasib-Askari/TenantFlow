@@ -4,12 +4,16 @@ using Api.Authorization;
 using Api.Middleware;
 using Application.Auth;
 using Application.Common;
+using Application.Projects.Interfaces;
+using Application.Projects.Services;
+using Application.Tenants.Interfaces;
 using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Identity;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Interceptors;
 using Infrastructure.Persistence.Repositories;
+using Infrastructure.Projects;
 using Infrastructure.Tenants;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -100,8 +104,12 @@ builder.Services.AddScoped<ITenantContext>(sp => sp.GetRequiredService<TenantCon
 // Cache Service
 builder.Services.AddScoped<ICacheService, RedisCacheService>();
 
+// Entity Service
+builder.Services.AddScoped<IProjectService, ProjectService>();
+
 // Respositories
 builder.Services.AddScoped<ITenantRepository, TenantRepository>();
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 
 // Database Configuration
 // builder.Services.AddSingleton<ITenantContext, StubTenantContext>();

@@ -1,3 +1,4 @@
+using Application.Projects.DTOs;
 using Application.Projects.Interfaces;
 using Domain.Entities.Projects;
 using Infrastructure.Persistence;
@@ -9,24 +10,67 @@ public class ProjectRepository(AppDbContext context) : IProjectRepository
 {
     private readonly AppDbContext _context = context;
 
-    public async Task AddAsync(Project project, CancellationToken ct = default)
+    public async Task AddAsync(
+        Guid tenantId,
+        CreateProjectDto createProjectDto,
+        CancellationToken ct = default
+    )
     {
-        // await Project.Create(Project project);
-        // TODO: get the tenantId from the project and check if it exists in the database
+        var newProject = Project.Create(
+            tenantId,
+            createProjectDto.Name,
+            createProjectDto.Description,
+            createProjectDto.Color
+        );
+        await _context.Projects.AddAsync(newProject, ct);
+    }
+
+    public async Task<IReadOnlyList<Project>> GetAllByTenantIdAsync(
+        Guid tenantId,
+        CancellationToken ct = default
+    )
+    {
+        return await _context
+            .Projects.Where(p => p.TenantId == tenantId)
+            .Include(p => p.Members)
+            .Include(p => p.Tasks)
+            .ToListAsync(ct);
     }
 
     public Task<Project?> GetByIdAsync(Guid id, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        var project = _context
+            .Projects.Include(p => p.Members)
+            .Include(p => p.Tasks)
+            .FirstOrDefaultAsync(p => p.Id == id, ct);
+
+        return project;
     }
 
     public Task<bool> NameExistsAsync(Guid tenantId, string name, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        return _context.Projects.AnyAsync(p => p.TenantId == tenantId && p.Name == name, ct);
     }
 
-    public Task SaveAsync(CancellationToken ct = default)
+    public async Task UpdateAsync(
+        Guid tenantId,
+        Guid projectId,
+        UpdateProjectDto updateProjectDto,
+        CancellationToken ct = default
+    )
     {
-        throw new NotImplementedException();
+        var project =
+            _context
+                .Projects.Where(p => p.Id == projectId && p.TenantId == tenantId)
+                .FirstOrDefault()
+            ?? throw new InvalidOperationException("Project not found.");
+
+        project.UpdateDetails(
+            updateProjectDto.Name,
+            updateProjectDto.Description,
+            updateProjectDto.Color
+        );
+
+        await _context.SaveChangesAsync(ct);
     }
 }
