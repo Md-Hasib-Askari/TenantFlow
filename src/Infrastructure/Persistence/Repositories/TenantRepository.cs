@@ -1,6 +1,6 @@
+using Application.Tenants.Interfaces;
 using Domain.Entities;
 using Domain.Enums;
-using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories;

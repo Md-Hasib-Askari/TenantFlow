@@ -1,6 +1,6 @@
 using Domain.Entities;
 
-namespace Domain.Interfaces;
+namespace Application.Tenants.Interfaces;
 
 public interface ITenantRepository
 {

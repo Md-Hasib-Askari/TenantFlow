@@ -1,9 +1,9 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using Application.Tenants.Interfaces;
 using Domain.Entities;
 using Domain.Enums;
-using Domain.Interfaces;
 using Infrastructure.Tenants;
 using StackExchange.Redis;
 

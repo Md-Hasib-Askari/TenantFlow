@@ -1,0 +1,24 @@
+@Api_HostAddress = http://localhost:5204
+
+### Get tenant by slug
+GET {{Api_HostAddress}}/api/tenants/by-slug/acme
+Accept: application/json
+
+### Get tenant by ID
+GET {{Api_HostAddress}}/api/tenants/00000000-0000-0000-0000-000000000000
+Accept: application/json
+
+### Create tenant
+POST {{Api_HostAddress}}/api/tenants
+Content-Type: application/json
+
+{
+  "slug": "acme",
+  "name": "Acme Corp",
+  "plan": "Free",
+  "billingEmail": "billing@acme.com"
+}
+
+### Check slug availability
+GET {{Api_HostAddress}}/api/tenants/slug-exists?slug=acme
+Accept: application/json

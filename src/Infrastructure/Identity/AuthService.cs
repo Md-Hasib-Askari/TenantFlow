@@ -1,8 +1,8 @@
 using Application.Auth;
 using Application.Common;
+using Application.Tenants.Interfaces;
 using Domain.Entities;
 using Domain.Enums;
-using Domain.Interfaces;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
