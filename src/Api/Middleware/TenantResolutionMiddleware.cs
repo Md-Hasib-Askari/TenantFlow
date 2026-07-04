@@ -27,7 +27,9 @@ public class TenantResolutionMiddleware(
     )
     {
         var path = ctx.Request.Path.Value ?? "";
-        if (path.StartsWith("/health") || path.StartsWith("/metrics"))
+        if (path.StartsWith("/health") || path.StartsWith("/metrics") ||
+            path.StartsWith("/api/auth") ||
+            (path == "/api/tenants" && ctx.Request.Method == "POST"))
         {
             await _next(ctx);
             return;

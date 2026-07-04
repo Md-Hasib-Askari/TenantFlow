@@ -1,0 +1,49 @@
+@Api_HostAddress = http://localhost:5204
+@Token = <your-jwt-token>
+
+### Register a new user
+POST {{Api_HostAddress}}/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "john@example.com",
+  "password": "Passw0rd!",
+  "displayName": "John Doe",
+  "tenantSlug": "acme"
+}
+
+### Login
+POST {{Api_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "john@example.com",
+  "password": "Passw0rd!"
+}
+
+### Refresh token
+POST {{Api_HostAddress}}/api/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "<your-refresh-token>"
+}
+
+### Get current user profile
+GET {{Api_HostAddress}}/api/users/me
+Authorization: Bearer {{Token}}
+Accept: application/json
+
+### Update profile
+PATCH {{Api_HostAddress}}/api/users/me
+Authorization: Bearer {{Token}}
+Content-Type: application/json
+
+{
+  "displayName": "Jane Doe"
+}
+
+### List tenant users (admin)
+GET {{Api_HostAddress}}/api/users
+Authorization: Bearer {{Token}}
+Accept: application/json

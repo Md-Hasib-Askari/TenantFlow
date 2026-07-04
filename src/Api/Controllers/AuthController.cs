@@ -1,8 +1,5 @@
-using System.Security.Authentication;
 using Application.Auth;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace Api.Controllers;
 

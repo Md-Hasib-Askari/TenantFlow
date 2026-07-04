@@ -51,7 +51,11 @@ public class TenantController(ITenantService tenantService) : ControllerBase
     }
 
     [HttpPatch("{id}")]
-    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateTenantDto dto, CancellationToken ct)
+    public async Task<IActionResult> Update(
+        Guid id,
+        [FromBody] UpdateTenantDto dto,
+        CancellationToken ct
+    )
     {
         try
         {
