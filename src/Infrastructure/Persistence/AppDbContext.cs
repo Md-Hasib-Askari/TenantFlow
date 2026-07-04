@@ -1,5 +1,6 @@
 using System.Reflection;
 using Domain.Entities;
+using Domain.Entities.Common;
 using Domain.Entities.Projects;
 using Domain.Interfaces;
 using infrastructure.Persistence.Configurations;
@@ -33,7 +34,40 @@ public class AppDbContext(DbContextOptions<AppDbContext> options, ITenantContext
         modelBuilder.ApplyConfiguration(new ApiKeyConfiguration());
         modelBuilder.ApplyConfiguration(new RefreshTokenConfiguration());
 
+        ConfigureAuditRelationships(modelBuilder);
         ApplyTenantQueryFilters(modelBuilder);
+    }
+
+    private static void ConfigureAuditRelationships(ModelBuilder modelBuilder)
+    {
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            var clrType = entityType.ClrType;
+
+            if (typeof(ICreateAudit).IsAssignableFrom(clrType))
+            {
+                modelBuilder.Entity(clrType)
+                    .HasOne(nameof(BaseAudit.CreatedBy))
+                    .WithMany()
+                    .HasForeignKey(nameof(BaseAudit.CreatedById));
+            }
+
+            if (typeof(IUpdateAudit).IsAssignableFrom(clrType))
+            {
+                modelBuilder.Entity(clrType)
+                    .HasOne(nameof(BaseAudit.UpdatedBy))
+                    .WithMany()
+                    .HasForeignKey(nameof(BaseAudit.UpdatedById));
+            }
+
+            if (typeof(IDeleteAudit).IsAssignableFrom(clrType))
+            {
+                modelBuilder.Entity(clrType)
+                    .HasOne(nameof(BaseAudit.DeletedBy))
+                    .WithMany()
+                    .HasForeignKey(nameof(BaseAudit.DeletedById));
+            }
+        }
     }
 
     private void ApplyTenantQueryFilters(ModelBuilder modelBuilder)

@@ -1,9 +1,10 @@
 using System.Text.Json.Serialization;
 using Domain.Entities.Common;
+using Domain.Interfaces;
 
 namespace Domain.Entities.Projects;
 
-public class ProjectMember : BaseAudit
+public class ProjectMember : BaseAudit, ITenantScoped
 {
     public Guid Id { get; private init; }
     public Guid TenantId { get; private init; }
@@ -17,10 +18,11 @@ public class ProjectMember : BaseAudit
 
     private ProjectMember() { }
 
-    public static ProjectMember Create(Guid projectId, Guid userId) =>
+    public static ProjectMember Create(Guid tenantId, Guid projectId, Guid userId) =>
         new()
         {
             Id = Guid.NewGuid(),
+            TenantId = tenantId,
             ProjectId = projectId,
             UserId = userId,
             CreatedAt = DateTimeOffset.UtcNow,

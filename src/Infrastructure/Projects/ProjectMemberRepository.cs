@@ -23,7 +23,13 @@ public class ProjectMemberRepository(AppDbContext context) : IProjectMemberRepos
 
     public async Task AddMemberAsync(Guid projectId, Guid userId, CancellationToken ct = default)
     {
-        var projectMember = ProjectMember.Create(projectId, userId);
+        var project = await _context.Projects
+            .Where(p => p.Id == projectId)
+            .Select(p => new { p.TenantId })
+            .FirstOrDefaultAsync(ct)
+            ?? throw new InvalidOperationException("Project not found.");
+
+        var projectMember = ProjectMember.Create(project.TenantId, projectId, userId);
 
         _context.ProjectMembers.Add(projectMember);
         await _context.SaveChangesAsync(ct);

@@ -15,9 +15,15 @@ public class ProjectMemberConfiguration : IEntityTypeConfiguration<ProjectMember
         builder.HasIndex(pm => new { pm.ProjectId, pm.UserId }).IsUnique();
 
         builder
+            .HasOne(pm => pm.Tenant)
+            .WithMany(t => t.ProjectMembers)
+            .HasForeignKey(pm => pm.TenantId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder
             .HasOne(pm => pm.Project)
             .WithMany(p => p.Members)
-            .HasForeignKey(p => p.ProjectId)
+            .HasForeignKey(pm => pm.ProjectId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder
