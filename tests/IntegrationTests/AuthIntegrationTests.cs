@@ -11,20 +11,20 @@ public class AuthIntegrationTests : IAsyncLifetime
         .WithPassword("mtsp")
         .Build();
 
-    private WebApplicationFactory<Program> _factory = null!;
-    private HttpClient _client = null!;
-    private string _connectionString = null!;
+    // private WebApplicationFactory<Program> _factory = null!;
+    // private HttpClient _client = null!;
+    // private string _connectionString = null!;
 
     public async Task InitializeAsync()
     {
         await _postgres.StartAsync();
-        _connectionString = _postgres.GetConnectionString();
+        // _connectionString = _postgres.GetConnectionString();
 
-        _factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
-        {
-            builder.UseSetting("ConnectionStrings:Postgres", _connectionString);
-            builder.UseSetting("ConnectionStrings:Redis", "localhost:6379");
-        });
+        // _factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
+        // {
+        //     builder.UseSetting("ConnectionStrings:Postgres", _connectionString);
+        //     builder.UseSetting("ConnectionStrings:Redis", "localhost:6379");
+        // });
     }
 
     public Task DisposeAsync()

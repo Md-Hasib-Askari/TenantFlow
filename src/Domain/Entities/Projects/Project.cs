@@ -1,4 +1,5 @@
 using Domain.Entities.Common;
+using Domain.Entities.Tasks;
 using Domain.Exceptions;
 using Domain.Interfaces;
 
