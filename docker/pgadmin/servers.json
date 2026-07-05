@@ -5,7 +5,7 @@
       "Group": "Servers",
       "Host": "postgres",
       "Port": 5432,
-      "MaintenanceDB": "mtsp",
+      "MaintenanceDB": "mtsp_default",
       "Username": "mtsp",
       "SSLMode": "prefer",
       "Comment": "Local MTSP dev database (docker compose service: postgres)"
