@@ -13,6 +13,7 @@ public class ProjectRepository(AppDbContext context) : IProjectRepository
     public async Task AddAsync(
         Guid tenantId,
         CreateProjectDto createProjectDto,
+        Guid createdById,
         CancellationToken ct = default
     )
     {
@@ -20,9 +21,11 @@ public class ProjectRepository(AppDbContext context) : IProjectRepository
             tenantId,
             createProjectDto.Name,
             createProjectDto.Description,
-            createProjectDto.Color
+            createProjectDto.Color,
+            createdById
         );
         await _context.Projects.AddAsync(newProject, ct);
+        await _context.SaveChangesAsync(ct);
     }
 
     public async Task<IReadOnlyList<Project>> GetAllByTenantIdAsync(
@@ -45,6 +48,11 @@ public class ProjectRepository(AppDbContext context) : IProjectRepository
             .FirstOrDefaultAsync(p => p.Id == id, ct);
 
         return project;
+    }
+
+    public Task<bool> ExistsAsync(Guid tenantId, Guid projectId, CancellationToken ct = default)
+    {
+        return _context.Projects.AnyAsync(p => p.TenantId == tenantId && p.Id == projectId, ct);
     }
 
     public Task<bool> NameExistsAsync(Guid tenantId, string name, CancellationToken ct = default)

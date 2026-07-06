@@ -13,6 +13,7 @@ public class TaskRepository(AppDbContext db) : ITaskRepository
     public async Task AddAsync(TaskItem taskItem, CancellationToken ct = default)
     {
         await _db.TaskItems.AddAsync(taskItem, ct);
+        await _db.SaveChangesAsync(ct);
     }
 
     public async Task DeleteAsync(Guid taskItemId, Guid deletedBy, CancellationToken ct = default)

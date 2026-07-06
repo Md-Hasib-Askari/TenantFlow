@@ -65,8 +65,7 @@ public class DataSeeder(
         if (await db.Projects.AnyAsync(ct))
             return;
 
-        var project = Project.Create(tenant.Id, "Getting Started", "Onboarding guide", "#63B3ED");
-        db.Entry(project).Property(p => p.CreatedById).CurrentValue = creator.Id;
+        var project = Project.Create(tenant.Id, "Getting Started", "Onboarding guide", "#63B3ED", creator.Id);
         db.Projects.Add(project);
         await db.SaveChangesAsync(ct);
     }

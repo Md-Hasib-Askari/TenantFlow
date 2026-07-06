@@ -10,7 +10,7 @@ public interface IProjectRepository
         Guid tenantId,
         CancellationToken ct = default
     );
-    Task AddAsync(Guid tenantId, CreateProjectDto createProjectDto, CancellationToken ct = default);
+    Task AddAsync(Guid tenantId, CreateProjectDto createProjectDto, Guid createdById, CancellationToken ct = default);
     Task UpdateAsync(
         Guid tenantId,
         Guid projectId,
@@ -18,4 +18,5 @@ public interface IProjectRepository
         CancellationToken ct = default
     );
     Task<bool> NameExistsAsync(Guid tenantId, string name, CancellationToken ct = default);
+    Task<bool> ExistsAsync(Guid tenantId, Guid projectId, CancellationToken ct = default);
 }

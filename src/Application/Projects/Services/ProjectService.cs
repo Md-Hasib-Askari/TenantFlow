@@ -11,10 +11,11 @@ public class ProjectService(IProjectRepository projectRepo) : IProjectService
     public async Task AddAsync(
         Guid tenantId,
         CreateProjectDto createProjectDto,
+        Guid createdById,
         CancellationToken ct = default
     )
     {
-        await _projectRepo.AddAsync(tenantId, createProjectDto, ct);
+        await _projectRepo.AddAsync(tenantId, createProjectDto, createdById, ct);
     }
 
     public async Task<IReadOnlyList<Project>> GetAllByTenantIdAsync(
@@ -29,6 +30,15 @@ public class ProjectService(IProjectRepository projectRepo) : IProjectService
     {
         return await _projectRepo.GetByIdAsync(id, ct)
             ?? throw new KeyNotFoundException($"Project with ID {id} not found.");
+    }
+
+    public async Task<bool> ExistsAsync(
+        Guid tenantId,
+        Guid projectId,
+        CancellationToken ct = default
+    )
+    {
+        return await _projectRepo.ExistsAsync(tenantId, projectId, ct);
     }
 
     public Task<bool> NameExistsAsync(Guid tenantId, string name, CancellationToken ct = default)
