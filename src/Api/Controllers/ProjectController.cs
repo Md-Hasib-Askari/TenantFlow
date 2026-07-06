@@ -18,6 +18,7 @@ public class ProjectController(IProjectService projectService, ITenantContext te
         return Ok(projects);
     }
 
+    [Authorize(Policy = "ProjectMemberView")]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
     {
@@ -33,6 +34,7 @@ public class ProjectController(IProjectService projectService, ITenantContext te
         return Ok();
     }
 
+    [Authorize(Policy = "ProjectMemberAdmin")]
     [HttpPatch("{id}")]
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdateProjectDto dto, CancellationToken ct)
     {

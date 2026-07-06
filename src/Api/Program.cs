@@ -57,9 +57,19 @@ builder
     .AddPolicy(
         "ResourceTenantAdmin",
         policy => policy.Requirements.Add(new TenantMemberRequirement("Owner", "Member"))
+    )
+    .AddPolicy(
+        "ProjectMemberView",
+        policy => policy.Requirements.Add(new ProjectMemberRoleRequirement("Member", "Editor", "Admin"))
+    )
+    .AddPolicy(
+        "ProjectMemberAdmin",
+        policy => policy.Requirements.Add(new ProjectMemberRoleRequirement("Admin"))
     );
 builder.Services.AddSingleton<IAuthorizationHandler, TenantRoleHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, TenantMemberHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, ProjectMemberRoleHandler>();
+builder.Services.AddHttpContextAccessor();
 
 var jwtOpts = builder.Configuration.GetSection("Jwt").Get<JwtOptions>()!;
 var rsa = RSA.Create(2048);

@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Projects;
 
-public class ProjectMemberRepository(AppDbContext context) : IProjectMemberRepository
+public class ProjectMemberRepository(AppDbContext db) : IProjectMemberRepository
 {
-    private readonly AppDbContext _context = context;
+    private readonly AppDbContext _db = db;
 
     public async Task<bool> IsMemberAsync(
         Guid projectId,
@@ -15,36 +15,37 @@ public class ProjectMemberRepository(AppDbContext context) : IProjectMemberRepos
         CancellationToken ct = default
     )
     {
-        return await _context.ProjectMembers.AnyAsync(
+        return await _db.ProjectMembers.AnyAsync(
             pm => pm.ProjectId == projectId && pm.UserId == userId,
             ct
         );
     }
 
-    public async Task AddMemberAsync(Guid projectId, Guid userId, CancellationToken ct = default)
+    public async Task AddMemberAsync(Guid projectId, Guid userId, Guid createdById, CancellationToken ct = default)
     {
-        var project = await _context.Projects
-            .Where(p => p.Id == projectId)
-            .Select(p => new { p.TenantId })
-            .FirstOrDefaultAsync(ct)
+        var project =
+            await _db
+                .Projects.Where(p => p.Id == projectId)
+                .Select(p => new { p.TenantId })
+                .FirstOrDefaultAsync(ct)
             ?? throw new InvalidOperationException("Project not found.");
 
-        var projectMember = ProjectMember.Create(project.TenantId, projectId, userId);
+        var projectMember = ProjectMember.Create(project.TenantId, projectId, userId, createdById);
 
-        _context.ProjectMembers.Add(projectMember);
-        await _context.SaveChangesAsync(ct);
+        _db.ProjectMembers.Add(projectMember);
+        await _db.SaveChangesAsync(ct);
     }
 
     public async Task RemoveMemberAsync(Guid projectId, Guid userId, CancellationToken ct = default)
     {
-        var projectMember = await _context
+        var projectMember = await _db
             .ProjectMembers.Where(pm => pm.ProjectId == projectId && pm.UserId == userId)
             .FirstOrDefaultAsync(ct);
 
         if (projectMember != null)
         {
-            _context.ProjectMembers.Remove(projectMember);
-            await _context.SaveChangesAsync(ct);
+            _db.ProjectMembers.Remove(projectMember);
+            await _db.SaveChangesAsync(ct);
         }
     }
 
@@ -55,15 +56,33 @@ public class ProjectMemberRepository(AppDbContext context) : IProjectMemberRepos
         CancellationToken ct = default
     )
     {
-        var projectMember = await _context.ProjectMembers.FirstOrDefaultAsync(
+        var projectMember =
+            await _db.ProjectMembers.FirstOrDefaultAsync(
+                pm => pm.ProjectId == projectId && pm.UserId == userId,
+                ct
+            ) ?? throw new InvalidOperationException("Project member not found.");
+
+        projectMember.ChangeRole(newRole);
+        await _db.SaveChangesAsync(ct);
+    }
+
+    public async Task<ProjectMember?> GetMemberAsync(
+        Guid projectId,
+        Guid userId,
+        CancellationToken ct = default
+    )
+    {
+        return await _db.ProjectMembers.FirstOrDefaultAsync(
             pm => pm.ProjectId == projectId && pm.UserId == userId,
             ct
         );
+    }
 
-        if (projectMember != null)
-        {
-            ProjectMember.ChangeRole(projectMember, newRole);
-            await _context.SaveChangesAsync(ct);
-        }
+    public async Task<IReadOnlyList<ProjectMember>> GetMembersByProjectIdAsync(
+        Guid projectId,
+        CancellationToken ct = default
+    )
+    {
+        return await _db.ProjectMembers.Where(pm => pm.ProjectId == projectId).ToListAsync(ct);
     }
 }

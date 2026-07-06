@@ -22,6 +22,7 @@ public class TaskController(ITaskService taskService, ITenantContext tenantConte
         return Ok(task);
     }
 
+    [Authorize(Policy = "ProjectMemberView")]
     [HttpGet("by-project/{projectId:guid}")]
     public async Task<IActionResult> GetByProjectId(Guid projectId, CancellationToken ct)
     {

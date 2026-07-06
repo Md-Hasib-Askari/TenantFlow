@@ -15,6 +15,7 @@ public class ProjectMemberController(
     ITenantContext tenantContext
 ) : ControllerBase
 {
+    [Authorize(Policy = "ProjectMemberView")]
     [HttpGet]
     public async Task<IActionResult> GetAll(Guid projectId, CancellationToken ct)
     {
@@ -23,6 +24,7 @@ public class ProjectMemberController(
         return Ok(members.Select(MapToDto));
     }
 
+    [Authorize(Policy = "ProjectMemberView")]
     [HttpGet("{userId}")]
     public async Task<IActionResult> GetMember(Guid projectId, Guid userId, CancellationToken ct)
     {
@@ -35,6 +37,7 @@ public class ProjectMemberController(
         return Ok(MapToDto(member));
     }
 
+    [Authorize(Policy = "ProjectMemberAdmin")]
     [HttpPost]
     public async Task<IActionResult> AddMember(
         Guid projectId,
@@ -48,6 +51,7 @@ public class ProjectMemberController(
         return Ok();
     }
 
+    [Authorize(Policy = "ProjectMemberAdmin")]
     [HttpPatch("{userId}")]
     public async Task<IActionResult> UpdateRole(
         Guid projectId,
@@ -61,6 +65,7 @@ public class ProjectMemberController(
         return Ok();
     }
 
+    [Authorize(Policy = "ProjectMemberAdmin")]
     [HttpDelete("{userId}")]
     public async Task<IActionResult> RemoveMember(
         Guid projectId,
