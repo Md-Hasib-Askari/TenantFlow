@@ -1,3 +1,4 @@
+using Application.Projects.DTOs;
 using Application.Projects.Interfaces;
 using Domain.Entities.Projects;
 
@@ -25,7 +26,7 @@ public class ProjectMemberService(
         await _projectMemberRepo.AddMemberAsync(projectId, userId, addedById, ct);
     }
 
-    public async Task<ProjectMember?> GetMemberAsync(
+    public async Task<ProjectMemberResponse?> GetMemberAsync(
         Guid tenantId,
         Guid projectId,
         Guid userId,
@@ -35,10 +36,11 @@ public class ProjectMemberService(
         if (!await _projectSvc.ExistsAsync(tenantId, projectId, ct))
             throw new InvalidOperationException("Project not found.");
 
-        return await _projectMemberRepo.GetMemberAsync(projectId, userId, ct);
+        var member = await _projectMemberRepo.GetMemberAsync(projectId, userId, ct);
+        return member is not null ? MapToResponse(member) : null;
     }
 
-    public async Task<IReadOnlyList<ProjectMember>> GetMembersByProjectIdAsync(
+    public async Task<IReadOnlyList<ProjectMemberResponse>> GetMembersByProjectIdAsync(
         Guid tenantId,
         Guid projectId,
         CancellationToken ct = default
@@ -47,7 +49,8 @@ public class ProjectMemberService(
         if (!await _projectSvc.ExistsAsync(tenantId, projectId, ct))
             throw new InvalidOperationException("Project not found.");
 
-        return await _projectMemberRepo.GetMembersByProjectIdAsync(projectId, ct);
+        var members = await _projectMemberRepo.GetMembersByProjectIdAsync(projectId, ct);
+        return members.Select(MapToResponse).ToList();
     }
 
     public async Task<bool> IsMemberAsync(
@@ -89,4 +92,6 @@ public class ProjectMemberService(
 
         await _projectMemberRepo.UpdateMemberRoleAsync(projectId, userId, newRole, ct);
     }
+
+    private static ProjectMemberResponse MapToResponse(ProjectMember m) => new(m.UserId, m.Role);
 }

@@ -1,16 +1,17 @@
+using Application.Projects.DTOs;
 using Domain.Entities.Projects;
 
 namespace Application.Projects.Interfaces;
 
 public interface IProjectMemberService
 {
-    Task<ProjectMember?> GetMemberAsync(
+    Task<ProjectMemberResponse?> GetMemberAsync(
         Guid tenantId,
         Guid projectId,
         Guid userId,
         CancellationToken ct = default
     );
-    Task<IReadOnlyList<ProjectMember>> GetMembersByProjectIdAsync(
+    Task<IReadOnlyList<ProjectMemberResponse>> GetMembersByProjectIdAsync(
         Guid tenantId,
         Guid projectId,
         CancellationToken ct = default

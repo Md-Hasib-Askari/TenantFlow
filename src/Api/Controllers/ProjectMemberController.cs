@@ -1,6 +1,5 @@
 using Application.Projects.DTOs;
 using Application.Projects.Interfaces;
-using Domain.Entities.Projects;
 using Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +20,7 @@ public class ProjectMemberController(
     {
         var members = await projectMemberService.GetMembersByProjectIdAsync(
             tenantContext.TenantId, projectId, ct);
-        return Ok(members.Select(MapToDto));
+        return Ok(members);
     }
 
     [Authorize(Policy = "ProjectMemberView")]
@@ -34,7 +33,7 @@ public class ProjectMemberController(
         if (member is null)
             return NotFound(new { error = "Member not found." });
 
-        return Ok(MapToDto(member));
+        return Ok(member);
     }
 
     [Authorize(Policy = "ProjectMemberAdmin")]
@@ -77,6 +76,4 @@ public class ProjectMemberController(
             tenantContext.TenantId, projectId, userId, ct);
         return Ok();
     }
-
-    private static ProjectMemberResponse MapToDto(ProjectMember m) => new(m.UserId, m.Role);
 }
