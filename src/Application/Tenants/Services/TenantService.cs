@@ -8,11 +8,16 @@ public class TenantService(ITenantRepository repo) : ITenantService
 {
     private readonly ITenantRepository _repo = repo;
 
-    public async Task AddAsync(CreateTenantRequest createTenantDto, CancellationToken ct = default)
+    public async Task AddAsync(
+        CreateTenantRequest createTenantDto,
+        Guid createdBy,
+        CancellationToken ct = default
+    )
     {
         var tenant = Tenant.Create(
             createTenantDto.Slug,
             createTenantDto.Name,
+            createdBy,
             createTenantDto.Plan
         );
         await _repo.AddAsync(tenant, ct);
@@ -33,6 +38,7 @@ public class TenantService(ITenantRepository repo) : ITenantService
     public async Task UpdateAsync(
         Guid id,
         UpdateTenantRequest updateTenantDto,
+        Guid updatedBy,
         CancellationToken ct = default
     )
     {
@@ -41,6 +47,7 @@ public class TenantService(ITenantRepository repo) : ITenantService
             ?? throw new KeyNotFoundException($"Tenant with ID {id} not found.");
 
         tenant.Update(
+            updatedBy: updatedBy,
             name: updateTenantDto.Name,
             tenantStatus: updateTenantDto.TenantStatus,
             newPlan: updateTenantDto.TenantPlan,

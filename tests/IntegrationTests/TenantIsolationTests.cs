@@ -77,8 +77,9 @@ public class TenantIsolationTests : IAsyncLifetime
         await context.Database.MigrateAsync();
 
         // Seed tenants via EF (query filters don't block INSERT on Tenants since it's not ITenantScoped)
-        var tenantA = Tenant.Create("tenant-a", "Tenant A Corp", PlanTier.Pro);
-        var tenantB = Tenant.Create("tenant-b", "Tenant B Inc", PlanTier.Free);
+        // TODO: update createdBy/updatedBy to a real user ID if needed for auditing
+        var tenantA = Tenant.Create("tenant-a", "Tenant A Corp", Guid.Empty, PlanTier.Pro);
+        var tenantB = Tenant.Create("tenant-b", "Tenant B Inc", Guid.Empty, PlanTier.Free);
 
         context.Tenants.Add(tenantA);
         context.Tenants.Add(tenantB);

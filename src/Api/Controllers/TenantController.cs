@@ -39,16 +39,27 @@ public class TenantController(ITenantService tenantService) : ControllerBase
 
     [AllowAnonymous]
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateTenantRequest dto, CancellationToken ct)
+    public async Task<IActionResult> Create(
+        [FromBody] CreateTenantRequest dto,
+        CancellationToken ct
+    )
     {
-        await tenantService.AddAsync(dto, ct);
+        var userId = ClaimsPrincipalExtensions.GetUserId(User);
+
+        await tenantService.AddAsync(dto, userId, ct);
         return Ok();
     }
 
     [HttpPatch("{id}")]
-    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateTenantRequest dto, CancellationToken ct)
+    public async Task<IActionResult> Update(
+        Guid id,
+        [FromBody] UpdateTenantRequest dto,
+        CancellationToken ct
+    )
     {
-        await tenantService.UpdateAsync(id, dto, ct);
+        var userId = ClaimsPrincipalExtensions.GetUserId(User);
+
+        await tenantService.UpdateAsync(id, dto, userId, ct);
         return Ok();
     }
 }

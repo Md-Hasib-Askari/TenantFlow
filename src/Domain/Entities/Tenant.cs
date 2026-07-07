@@ -31,7 +31,12 @@ public class Tenant : BaseAudit
 
     private Tenant() { }
 
-    public static Tenant Create(string slug, string name, PlanTier plan = PlanTier.Free)
+    public static Tenant Create(
+        string slug,
+        string name,
+        Guid createdBy,
+        PlanTier plan = PlanTier.Free
+    )
     {
         // Validations
         if (string.IsNullOrWhiteSpace(slug))
@@ -49,6 +54,7 @@ public class Tenant : BaseAudit
             Status = TenantStatus.Active,
             BillingEmail = string.Empty, // default empty, can be updated later
             CreatedAt = DateTimeOffset.UtcNow,
+            CreatedById = createdBy,
             Settings = new TenantSettings(),
         };
 
@@ -66,13 +72,15 @@ public class Tenant : BaseAudit
         Settings = newSettings;
     }
 
-    public void MarkAsDeleted()
+    public new void MarkAsDeleted(Guid deletedBy)
     {
         Status = TenantStatus.Deleted;
         DeletedAt = DateTimeOffset.UtcNow;
+        DeletedById = deletedBy;
     }
 
     public void Update(
+        Guid updatedBy,
         string? name = null,
         TenantStatus? tenantStatus = null,
         PlanTier? newPlan = null,
@@ -93,5 +101,16 @@ public class Tenant : BaseAudit
 
         if (!string.IsNullOrWhiteSpace(billingEmail))
             BillingEmail = billingEmail;
+
+        if (
+            !string.IsNullOrWhiteSpace(name)
+            || tenantStatus is not null
+            || newPlan is not null
+            || !string.IsNullOrWhiteSpace(billingEmail)
+        )
+        {
+            UpdatedAt = DateTimeOffset.UtcNow;
+            UpdatedById = updatedBy;
+        }
     }
 }

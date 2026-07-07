@@ -48,7 +48,7 @@ public class DataSeeder(
         if (existing is not null)
             return existing;
 
-        var tenant = Tenant.Create("acme", "Acme Corp", PlanTier.Pro);
+        var tenant = Tenant.Create("acme", "Acme Corp", creator.Id, PlanTier.Pro);
         db.Entry(tenant).Property(t => t.CreatedById).CurrentValue = creator.Id;
         db.Tenants.Add(tenant);
         await db.SaveChangesAsync(ct);
@@ -60,17 +60,31 @@ public class DataSeeder(
         return tenant;
     }
 
-    private async Task SeedProjectAsync(Tenant tenant, ApplicationUser creator, CancellationToken ct)
+    private async Task SeedProjectAsync(
+        Tenant tenant,
+        ApplicationUser creator,
+        CancellationToken ct
+    )
     {
         if (await db.Projects.AnyAsync(ct))
             return;
 
-        var project = Project.Create(tenant.Id, "Getting Started", "Onboarding guide", "#63B3ED", creator.Id);
+        var project = Project.Create(
+            tenant.Id,
+            "Getting Started",
+            "Onboarding guide",
+            "#63B3ED",
+            creator.Id
+        );
         db.Projects.Add(project);
         await db.SaveChangesAsync(ct);
     }
 
-    private async Task UpdateUserTenantAsync(ApplicationUser user, Tenant tenant, CancellationToken ct)
+    private async Task UpdateUserTenantAsync(
+        ApplicationUser user,
+        Tenant tenant,
+        CancellationToken ct
+    )
     {
         if (user.PrimaryTenantId == tenant.Id)
             return;
