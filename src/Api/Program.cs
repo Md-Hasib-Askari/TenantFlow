@@ -271,8 +271,18 @@ app.MapGet("/health", async (HttpContext ctx, IConnectionMultiplexer? redis, App
         else
             try
             {
-                await redis.GetDatabase().PingAsync();
-                result["redis"] = new { status = "healthy" };
+                var key = $"health:ping:{Guid.NewGuid():n}";
+                var value = $"ok-{DateTime.UtcNow:O}";
+                var rdb = redis.GetDatabase();
+                await rdb.StringSetAsync(key, value, TimeSpan.FromSeconds(10));
+                var read = await rdb.StringGetAsync(key);
+                result["redis"] = new
+                {
+                    status = "healthy",
+                    wrote = value,
+                    read = read.ToString(),
+                    ttl_s = 10
+                };
             }
             catch (Exception ex)
             {
