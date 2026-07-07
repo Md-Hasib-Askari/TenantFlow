@@ -49,7 +49,6 @@ public class DataSeeder(
             return existing;
 
         var tenant = Tenant.Create("acme", "Acme Corp", creator.Id, PlanTier.Pro);
-        db.Entry(tenant).Property(t => t.CreatedById).CurrentValue = creator.Id;
         db.Tenants.Add(tenant);
         await db.SaveChangesAsync(ct);
 

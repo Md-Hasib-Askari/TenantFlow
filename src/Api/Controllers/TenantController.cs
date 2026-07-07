@@ -37,7 +37,7 @@ public class TenantController(ITenantService tenantService) : ControllerBase
         return Ok(new { slug, exists });
     }
 
-    [AllowAnonymous]
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> Create(
         [FromBody] CreateTenantRequest dto,
