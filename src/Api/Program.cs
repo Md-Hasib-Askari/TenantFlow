@@ -216,7 +216,9 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseMiddleware<TenantResolutionMiddleware>();
 
-app.UseHttpsRedirection();
+// SSL is terminated at the load balancer (DO App Platform).
+// Internal health checks use HTTP, so redirect would break them.
+// app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
