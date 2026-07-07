@@ -23,6 +23,7 @@ using Infrastructure.Tasks;
 using Infrastructure.Tenants;
 using Infrastructure.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using StackExchange.Redis;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -250,6 +251,35 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapGet("/health", () => Results.Ok(new { status = "healthy", timestamp = DateTime.UtcNow }));
+
+app.MapGet("/health/redis", (IConnectionMultiplexer? redis) =>
+{
+    if (redis is null)
+        return Results.Ok(new { status = "not_configured", timestamp = DateTime.UtcNow });
+    try
+    {
+        var db = redis.GetDatabase();
+        db.Ping();
+        return Results.Ok(new { status = "healthy", timestamp = DateTime.UtcNow });
+    }
+    catch (Exception ex)
+    {
+        return Results.Ok(new { status = "unhealthy", error = ex.Message, timestamp = DateTime.UtcNow });
+    }
+});
+
+app.MapGet("/health/database", async (AppDbContext db) =>
+{
+    try
+    {
+        await db.Database.ExecuteSqlRawAsync("SELECT 1");
+        return Results.Ok(new { status = "healthy", timestamp = DateTime.UtcNow });
+    }
+    catch (Exception ex)
+    {
+        return Results.Ok(new { status = "unhealthy", error = ex.Message, timestamp = DateTime.UtcNow });
+    }
+});
 
 // Auto-apply pending EF Core migrations on startup (safe for deployments)
 using (var migrateScope = app.Services.CreateScope())
