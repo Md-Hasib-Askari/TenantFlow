@@ -8,7 +8,12 @@ public class TaskService(ITaskRepository taskRepo) : ITaskService
 {
     private readonly ITaskRepository _taskRepo = taskRepo;
 
-    public Task AddAsync(Guid tenantId, Guid createBy, CreateTaskRequest taskItem, CancellationToken ct)
+    public Task AddAsync(
+        Guid tenantId,
+        Guid createBy,
+        CreateTaskRequest taskItem,
+        CancellationToken ct
+    )
     {
         var task = TaskItem.Create(
             tenantId,
@@ -107,8 +112,8 @@ public class TaskService(ITaskRepository taskRepo) : ITaskService
             taskItem.Description,
             taskItem.Status,
             taskItem.Priority,
-            task.AssigneeId,
-            task.ReporterId,
+            taskItem.AssigneeId,
+            taskItem.ReporterId,
             taskItem.DueDate,
             taskItem.EstimatedHours,
             taskItem.Sequence,
