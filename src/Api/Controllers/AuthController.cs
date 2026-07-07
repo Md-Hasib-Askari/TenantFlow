@@ -5,9 +5,10 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route("api/auth")]
-public class AuthController(IAuthService authService) : ControllerBase
+public class AuthController(IAuthService authService, IWebHostEnvironment env) : ControllerBase
 {
     private readonly IAuthService _authService = authService;
+    private readonly IWebHostEnvironment _env = env;
     private const string RefreshTokenCookie = "refresh_token";
 
     [HttpPost("register")]
@@ -50,6 +51,7 @@ public class AuthController(IAuthService authService) : ControllerBase
         {
             HttpOnly = true,
             SameSite = SameSiteMode.Lax,
+            Secure = !_env.IsDevelopment(),
             Expires = DateTimeOffset.UtcNow.AddDays(7),
             IsEssential = true,
         });
