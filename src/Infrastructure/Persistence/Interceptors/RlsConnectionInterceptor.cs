@@ -27,7 +27,7 @@ public class RlsConnectionInterceptor(ITenantContext tenantContext) : DbConnecti
     private static string BuildSetTenantIdSql(ITenantContext tenantContext) =>
         tenantContext.IsResolved && tenantContext.TenantId != Guid.Empty
             ? $"SET app.tenant_id = '{tenantContext.TenantId}'"
-            : "SET app.tenant_id = '00000000-0000-00000-0000-000000000000'";
+            : "SET app.tenant_id = '00000000-0000-0000-0000-000000000000'";
 
     private void SetTenantId(DbConnection conn)
     {
