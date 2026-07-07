@@ -154,16 +154,23 @@ builder
 builder.Services.AddOpenApi();
 
 // Redis
-builder.Services.AddSingleton<IConnectionMultiplexer>(_ =>
-    ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("Redis")!)
-);
+var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
+if (!string.IsNullOrEmpty(redisConnectionString))
+{
+    builder.Services.AddSingleton<IConnectionMultiplexer>(_ =>
+        ConnectionMultiplexer.Connect(redisConnectionString)
+    );
+}
 
 // Tenant Context (Scoped = one per request)
 builder.Services.AddScoped<TenantContext>();
 builder.Services.AddScoped<ITenantContext>(sp => sp.GetRequiredService<TenantContext>());
 
 // Cache Service
-builder.Services.AddScoped<ICacheService, RedisCacheService>();
+if (!string.IsNullOrEmpty(redisConnectionString))
+{
+    builder.Services.AddScoped<ICacheService, RedisCacheService>();
+}
 
 // Entity Services
 builder.Services.AddScoped<IProjectService, ProjectService>();
@@ -215,6 +222,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapGet("/health", () => Results.Ok(new { status = "healthy", timestamp = DateTime.UtcNow }));
 
 if (args.Contains("--seed"))
 {
