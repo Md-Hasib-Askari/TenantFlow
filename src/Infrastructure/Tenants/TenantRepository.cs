@@ -17,20 +17,19 @@ public class TenantRepository(AppDbContext db) : ITenantRepository
         _db
             .ApiKeys.AsNoTracking()
             .Where(k => k.KeyHash == hash && k.IsActive && k.DeletedAt == null)
-            .Where(k => k.ExpiresAt != null || k.ExpiresAt > DateTimeOffset.UtcNow)
+            .Where(k => k.ExpiresAt != null && k.ExpiresAt > DateTimeOffset.UtcNow)
             .Select(k => k.Tenant)
             .FirstOrDefaultAsync(ct);
 
     public async Task<Tenant?> GetByIdAsync(Guid id, CancellationToken ct = default) =>
-        await _db.Tenants
-            .FirstOrDefaultAsync(
-                t => t.Id == id && t.Status != TenantStatus.Deleted && t.DeletedAt == null,
-                ct
-            );
+        await _db.Tenants.FirstOrDefaultAsync(
+            t => t.Id == id && t.Status != TenantStatus.Deleted && t.DeletedAt == null,
+            ct
+        );
 
     public Task<Tenant?> GetBySlugAsync(string slug, CancellationToken ct = default) =>
-        _db.Tenants
-            .AsNoTracking()
+        _db
+            .Tenants.AsNoTracking()
             .FirstOrDefaultAsync(
                 t => t.Slug == slug && t.Status != TenantStatus.Deleted && t.DeletedAt == null,
                 ct

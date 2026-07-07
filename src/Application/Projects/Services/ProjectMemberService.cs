@@ -50,7 +50,7 @@ public class ProjectMemberService(
             throw new InvalidOperationException("Project not found.");
 
         var members = await _projectMemberRepo.GetMembersByProjectIdAsync(projectId, ct);
-        return members.Select(MapToResponse).ToList();
+        return [.. members.Select(MapToResponse)];
     }
 
     public async Task<bool> IsMemberAsync(
