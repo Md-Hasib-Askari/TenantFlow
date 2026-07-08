@@ -158,7 +158,14 @@ builder
     });
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer((document, _, _) =>
+    {
+        document.Servers = [];
+        return Task.CompletedTask;
+    });
+});
 
 // Redis
 var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
@@ -258,17 +265,10 @@ app.MapScalarApiReference(options =>
     options
         .WithTitle("TenantFlow API")
         .WithTheme(ScalarTheme.Purple)
-        .WithDarkMode(true)
+        .EnableDarkMode()
         .WithDynamicBaseServerUrl(true)
-        .WithHttpBearerAuthentication(bearer =>
-        {
-            bearer.Token = "";
-        })
-        .WithApiKeyAuthentication(apiKey =>
-        {
-            apiKey.Token = "";
-        })
-        .WithDefaultFonts(false)
+        .AddHttpAuthentication("bearer", scheme => scheme.Token = "")
+        .DisableDefaultFonts()
         .WithSearchHotKey("s");
 });
 
